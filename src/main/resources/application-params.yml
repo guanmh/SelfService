@@ -1,0 +1,22 @@
+# 不需要登陆就能访问的权限地址
+# 注释文档
+self-params:
+  user:
+    #    人员初始化密码
+    default-password: qqzz
+    adminAccountName: admin
+    adminPassword: qqzz
+    adminName: 超级管理员
+    adminId: -1
+    userSuperPassword: qqzz
+    notReadMaxLimit: 6
+    messageLimit: 20N
+  antMatchers:
+  - /swagger-resources/**
+  - /swagger-ui.html
+  - /v2/api-docs
+  - /webjars/**
+  # 项目
+  - /any/**
+  - /js/**
+  - /websocket/**

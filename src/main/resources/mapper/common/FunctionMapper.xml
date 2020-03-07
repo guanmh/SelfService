@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--你接口的包名是com.abc.dao,接口名是NameMapper.java，那么你的mapper.xml的namespace应该是com.abc.dao.NameMapper-->
+<mapper namespace="com.gmh.mapper.common.FunctionMapper">
+
+    <!--resultMap对应的是表与实体类的映射  - type 数据库表对应的实体类，别名或完整类名都可以-->
+    <resultMap id="FunctionMap" type="com.gmh.entity.common.Function">
+        <!-- 结果集的主键 -->
+        <id column="id" property="id"/>
+        <!-- 普通的列  -column 是数据库中字段， property是实体类中字段-->
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <association column="menu_id" property="menu" javaType="com.gmh.entity.common.Menu">
+            <id property="id" column="menu_id"/>
+            <result property="code" column="menuCode"/>
+        </association>
+    </resultMap>
+    <select id="queryList" resultMap="FunctionMap">
+        SELECT DISTINCT
+        sys_function.id,
+        sys_function.`name`,
+        sys_function.`code`,
+        sys_menu.id AS menu_id,
+        sys_menu.`code` AS menuCode
+        FROM
+        sys_function
+        LEFT JOIN sys_menu ON sys_function.menu_id = sys_menu.id
+        LEFT JOIN sys_role_function ON sys_role_function.function_id = sys_function.id
+        LEFT JOIN sys_user_role ON sys_user_role.role_id = sys_role_function.role_id
+        where
+        sys_function.is_cancel = 0
+    </select>
+</mapper>

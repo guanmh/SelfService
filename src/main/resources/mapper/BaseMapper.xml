@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--你接口的包名是com.abc.dao,接口名是NameMapper.java，那么你的mapper.xml的namespace应该是com.abc.dao.NameMapper-->
+<mapper namespace="com.gmh.mapper.BaseMapper">
+    <!--方法mapper的参数必须是@Param(MyBatisUtils.PARAM_VALUE) MyBatisUtils myBatisUtils-->
+    <sql id="Example_Where_Clause">
+        <if test="MyBatisUtils!=null &amp;&amp; MyBatisUtils.conditionArrayList!=null">
+            and
+            <trim prefix="(" prefixOverrides="and|or" suffix=")">
+                <foreach collection="MyBatisUtils.conditionArrayList" item="criterion">
+                    <choose>
+                        <when test="criterion.type == 0">
+                            and
+                        </when>
+                        <when test="criterion.type == 1">
+                            or
+                        </when>
+                        <otherwise>
+
+                        </otherwise>
+                    </choose>
+                    ${criterion.condition}
+                    <choose>
+                        <when test="criterion.valueType == 0">
+                            <choose>
+                                <when test="criterion.operator == 2">
+                                    concat('%',concat(#{criterion.value},'%'))
+                                </when>
+                                <when test="criterion.operator == 6">
+                                </when>
+                                <otherwise>
+                                    #{criterion.value}
+                                </otherwise>
+                            </choose>
+                        </when>
+                        <when test="criterion.valueType == 1">
+                            <choose>
+                                <when test="criterion.operator == 3">
+                                    <foreach collection="criterion.value" item="listItem" separator="and">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                                <otherwise>
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </otherwise>
+                            </choose>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </if>
+    </sql>
+
+
+    <sql id="power_Where">
+        <if test="MyBatisUtils!=null &amp;&amp; MyBatisUtils.conditionArrayList!=null">
+        </if>
+    </sql>
+</mapper>

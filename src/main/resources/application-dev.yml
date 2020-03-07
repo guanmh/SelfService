@@ -1,0 +1,66 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/self?useSSL=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+# 连接池的配置信息
+# 初始化大小，最小，最大
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+# 配置获取连接等待超时的时间
+    maxWait: 60000
+# 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+# 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+# 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+# 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+#redis
+  redis:
+    jedis:
+      pool:
+        min-idle: 5
+        max-active: 10
+        max-idle: 10
+        max-wait: 2000
+    port: 6379
+    host: 127.0.0.1
+    timeout: 1000
+#缓存
+  cache:
+    type: REDIS
+    cache-names: redisCache
+# 禁用前缀
+    redis:
+      use-key-prefix: false
+# 允许保存空值
+#spring.cache.redis.cache-null-values=true
+# 自定义前缀
+#spring.cache.redis.key-prefix=
+# 定义超时时间，单位毫秒
+      time-to-live: 50000
+# 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath:mapper/*/*Mapper.xml,classpath:mapper/*/*/*Mapper.xml
+  configuration:
+    cache-enabled: true
+mapper:
+  mappers:
+    - tk.mybatis.mapper.common.Mapper
+  not-empty: true
+#日志
+logging:
+  file: ./logs/gmh/self.log
+  level:
+    com.gmh.*: debug
+  pattern:
+    console: '%d{HH:mm:ss} %-5level- %msg%n'

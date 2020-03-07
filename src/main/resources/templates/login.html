@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>登录页面</title>
+</head>
+<body>
+	<h2>自定义登录页面</h2>
+	<hr>
+	用户名
+	<input type="text" id="username" name="username" />
+	<br> 密码
+	<input type="password" name="password">
+	<br>
+	<input type="submit" id="loginBtn" value="登录">
+	<script type="text/javascript" src="jquery/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+		});
+		$("#loginBtn").bind("click", function() {
+			$.ajax({
+				type: "POST",
+				url : "/login",
+				data: "username="+$("#username").val()+"&password="+$("#password").val(),
+				success : function(data) {
+					alert(data)
+				}
+			});
+		})
+	</script>
+</body>
+</html>

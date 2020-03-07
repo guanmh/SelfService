@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: dev,params
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        hbm2ddl:
+          auto: none
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        generate_statistics: false
+server:
+  port: 80
+  servlet:
+    context-path: /self

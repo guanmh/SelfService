@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--你接口的包名是com.abc.dao,接口名是NameMapper.java，那么你的mapper.xml的namespace应该是com.abc.dao.NameMapper-->
+<mapper namespace="com.gmh.mapper.common.RoleMapper">
+
+    <!--resultMap对应的是表与实体类的映射  - type 数据库表对应的实体类，别名或完整类名都可以-->
+    <resultMap id="RoleMap" type="com.gmh.entity.common.Role">
+        <!-- 结果集的主键 -->
+        <id column="id" property="id"/>
+        <!-- 普通的列  -column 是数据库中字段， property是实体类中字段-->
+        <result column="name" property="name"/>
+        <result column="power" property="power"/>
+        <association column="organization_id" property="organization"
+                     javaType="com.gmh.entity.common.Organization">
+            <id property="id" column="organization_id"/>
+        </association>
+    </resultMap>
+
+    <select id="getAllNoCancel" resultMap="RoleMap">
+        SELECT
+        id,
+        name,
+        organization_id,
+        power
+        FROM
+        sys_role
+        WHERE
+        is_cancel = 0
+    </select>
+    <select id="selectOne" resultMap="RoleMap">
+      select a.* from sys_role a where a.id=#{id}
+    </select>
+</mapper>

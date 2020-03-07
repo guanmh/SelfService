@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--你接口的包名是com.abc.dao,接口名是NameMapper.java，那么你的mapper.xml的namespace应该是com.abc.dao.NameMapper-->
+<mapper namespace="com.gmh.mapper.common.MenuMapper">
+
+    <!--resultMap对应的是表与实体类的映射  - type 数据库表对应的实体类，别名或完整类名都可以-->
+    <resultMap id="MenuResultMap" type="com.gmh.entity.common.Menu">
+        <!-- 结果集的主键 -->
+        <id column="id" property="id"/>
+        <!-- 普通的列  -column 是数据库中字段， property是实体类中字段-->
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="order_asc" property="order"/>
+        <result column="code" property="code"/>
+        <association property="parentMenu" column="parent_id" javaType="com.gmh.entity.common.Menu">
+            <id property="id" column="parent_id"/>
+            <id property="code" column="pCode"/>
+        </association>
+    </resultMap>
+
+    <!--parameterType(输入类型)、resultType(输出类型)-->
+    <select id="getMenus" resultMap="MenuResultMap">
+        SELECT DISTINCT m.id, m.icon, m.`name`, m.order_asc, m.parent_id, m.`code`, p.`code` AS pCode
+        FROM sys_menu AS m LEFT JOIN sys_menu AS p ON m.parent_id = p.id
+        LEFT JOIN sys_role_menu ON sys_role_menu.menu_id = m.id
+        LEFT JOIN sys_user_role ON sys_role_menu.role_id = sys_user_role.role_id
+        WHERE m.is_cancel = 0
+        ORDER BY m.order_asc ASC
+    </select>
+</mapper>
