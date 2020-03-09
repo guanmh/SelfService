@@ -1,5 +1,7 @@
 package com.gmh.controller.common;
 
+import com.gmh.config.JwtTokenUtil;
+import com.gmh.entity.common.User;
 import com.gmh.enums.CacheEnum;
 import com.gmh.enums.ReturnCodeEnum;
 import com.gmh.utils.CacheUtils;
@@ -10,13 +12,17 @@ import com.gmh.vo.LoginUserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,11 +37,15 @@ import javax.servlet.http.HttpSession;
 public class LoginController {
 
   private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
-  @Autowired
-  private StringRedisTemplate stringRedisTemplate;
-
   @Value("${server.port}")
   private String servicePort;
+
+  @Autowired
+  @Qualifier("jwtUserDetailsService")
+  private UserDetailsService userDetailsService;
+
+  @Autowired
+  private JwtTokenUtil jwtTokenUtil;
 
   @GetMapping("getCsrf")
   @Cacheable(
@@ -55,6 +65,17 @@ public class LoginController {
     return ReturnUtil.success(token);
   }
 
+  @PostMapping("/login")
+  public String login(User user, HttpServletRequest request){
+    final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getLoginName());
+    final String token = jwtTokenUtil.generateToken(userDetails);
+    //添加 start
+    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    //添加 end
+    return ReturnUtil.success(token);
+  }
+
   @RequestMapping("loginError")
   public String loginError() {
     return ReturnUtil.error(ReturnCodeEnum.LOGIN_ERROR);
@@ -64,6 +85,7 @@ public class LoginController {
   public String loginMsg() {
     return ReturnUtil.error(ReturnCodeEnum.LOGIN_ERROR);
   }
+
 
   @GetMapping("loginSuccess")
   public String loginSuccess() {

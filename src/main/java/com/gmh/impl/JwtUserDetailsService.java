@@ -3,6 +3,7 @@ package com.gmh.impl;
 import com.gmh.entity.common.Menu;
 import com.gmh.entity.common.Role;
 import com.gmh.entity.common.Function;
+import com.gmh.entity.common.User;
 import com.gmh.enums.SystemStringEnum;
 import com.gmh.mapper.common.UserMapper;
 import com.gmh.service.ILoginService;
@@ -16,8 +17,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class LoginServiceImpl implements ILoginService {
+public class JwtUserDetailsService implements UserDetailsService {
 
   @Value("${self-params.user.adminAccountName}")
   private String adminAccountName;
@@ -53,31 +56,34 @@ public class LoginServiceImpl implements ILoginService {
   private PasswordEncoder passwordEncoder;
 
   @Autowired private IRoleService roleService;
-  @Autowired private UserMapper userMapper;
   @Autowired private IFunctionService functionService;
   @Autowired private IMenuService menuService;
+  @Autowired private UserMapper userMapper;
 
   @Override
   public UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException {
     if (adminAccountName.equals(loginName)) {
-      List<SimpleGrantedAuthority> authorities =
-              getSimpleGrantedAuthorities(
-                      roleService.getAllNoCancel(),
-                      functionService.getAllNoCancel(),
-                      menuService.getAllNoCancel(),
-                      SystemStringEnum.RolePowerEnum.ADMIN.getCode());
-      return new LoginUserVO(
+//      List<SimpleGrantedAuthority> authorities =
+//              getSimpleGrantedAuthorities(
+//                      roleService.getAllNoCancel(),
+//                      functionService.getAllNoCancel(),
+//                      menuService.getAllNoCancel(),
+//                      SystemStringEnum.RolePowerEnum.ADMIN.getCode());
+      List<GrantedAuthority> authorityList = new ArrayList<>();
+      authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
+      UserDetails userDetails = new LoginUserVO(
               adminId,
               adminName,
               adminAccountName,
               passwordEncoder.encode(adminPassword),
               true,
-              authorities);
+              authorityList);
+      return userDetails;
     } else {
-//      User user = userMapper.loginUser(loginName);
-//      if (Objects.isNull(user)) {
-//        throw new UsernameNotFoundException("用户名或密码错误！");
-//      }
+      User user = userMapper.loginUser(loginName);
+      if (Objects.isNull(user)) {
+        throw new UsernameNotFoundException("用户名或密码错误！");
+      }
 //      return getUserDetails(user);
       return null;
     }
