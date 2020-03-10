@@ -7,7 +7,7 @@
 1.activemq插件(完成)
 2.rabbitmq插件(完成)
 4.redis
-5.spring security
+5.spring security + jwt(完成)
 6.spring aop日志管理
 7.docker
 8.spring cloud
