@@ -58,45 +58,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-//    http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//        .and()
-//        .authorizeRequests()
-//        .antMatchers("/*")
-//        .permitAll()
-//        .anyRequest()
-//        .authenticated()
-//        .and()
-//        .formLogin()
-//        .loginPage("/loginMsg")
-//        .loginProcessingUrl("/login")
-//        .failureForwardUrl("/loginError")
-//        .defaultSuccessUrl("/loginSuccess", true)
-//        .permitAll()
-//        .and()
-//        .sessionManagement()
-//        .invalidSessionUrl("/timeout")
-//        .and()
-//        .rememberMe()
-//        .tokenValiditySeconds(1209600)
-//        .and()
-//        .logout()
-//        .logoutSuccessUrl("/logoutSuccess")
-//        .and()
-//        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//        .csrf().disable()// 禁用 Spring Security 自带的跨域处理
-//        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);// 定制我们自己的session策略:调整为让SpringSecurity不创建和使用 session
     http
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and()
             .authorizeRequests()
             .antMatchers("/login").permitAll()
-            .antMatchers("/*").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/**").anonymous()
-            .anyRequest().authenticated()       // 剩下所有的验证都需要验证
+            .anyRequest().authenticated()   // 剩下所有的验证都需要验证
             .and()
             .csrf().disable()                      // 禁用 Spring Security 自带的跨域处理
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     // 定制我们自己的 session 策略：调整为让 Spring Security 不创建和使用 session、
+      http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
   }
 
   @Override

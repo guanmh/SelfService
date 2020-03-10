@@ -69,10 +69,6 @@ public class LoginController {
   public String login(User user, HttpServletRequest request){
     final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getLoginName());
     final String token = jwtTokenUtil.generateToken(userDetails);
-    //添加 start
-    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-    //添加 end
     return ReturnUtil.success(token);
   }
 
@@ -91,5 +87,10 @@ public class LoginController {
   public String loginSuccess() {
     LOG.info("登录服务器,端口号：" + servicePort);
     return ReturnUtil.success(ReturnCodeEnum.LOGIN_SUCCESS);
+  }
+  @GetMapping("jwt")
+  public String jwt() {
+    UserDetails userDetails = (UserDetails) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return "jwt:"+userDetails.getUsername()+","+userDetails.getPassword();
   }
 }

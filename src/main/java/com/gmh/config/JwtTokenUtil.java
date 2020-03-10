@@ -47,7 +47,7 @@ public class JwtTokenUtil {
         final Date createdDate = clock.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
 
-        return Jwts.builder()
+        return "Bearer " + Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(createdDate)
@@ -61,9 +61,8 @@ public class JwtTokenUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
-        return (username.equals(user.getLoginName())
+        return (username.equals(userDetails.getUsername())
                 && !isTokenExpired(token)
         );
     }
