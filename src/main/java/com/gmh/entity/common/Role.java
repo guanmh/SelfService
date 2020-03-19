@@ -60,4 +60,8 @@ public class Role extends BaseEntity {
     public Role(Long id) {
         setId(id);
     }
+
+    public Role(String power) {
+        this.power = power;
+    }
 }

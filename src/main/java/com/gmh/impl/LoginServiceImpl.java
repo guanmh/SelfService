@@ -11,6 +11,7 @@ import com.gmh.service.common.IFunctionService;
 import com.gmh.service.common.IMenuService;
 import com.gmh.service.common.IRoleService;
 import com.gmh.utils.CollectionUtils;
+import com.gmh.utils.WebUtils;
 import com.gmh.vo.LoginUserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class JwtUserDetailsService implements UserDetailsService {
+public class LoginServiceImpl implements UserDetailsService {
 
   @Value("${self-params.user.adminAccountName}")
   private String adminAccountName;
@@ -63,12 +64,12 @@ public class JwtUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String loginName) throws UsernameNotFoundException {
     if (adminAccountName.equals(loginName)) {
-//      List<SimpleGrantedAuthority> authorities =
-//              getSimpleGrantedAuthorities(
-//                      roleService.getAllNoCancel(),
-//                      functionService.getAllNoCancel(),
-//                      menuService.getAllNoCancel(),
-//                      SystemStringEnum.RolePowerEnum.ADMIN.getCode());
+      List<SimpleGrantedAuthority> authorities =
+              getSimpleGrantedAuthorities(
+                      roleService.getAllNoCancel(),
+                      functionService.getAllNoCancel(),
+                      menuService.getAllNoCancel(),
+                      SystemStringEnum.RolePowerEnum.ADMIN.getCode());
       List<GrantedAuthority> authorityList = new ArrayList<>();
       authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
       UserDetails userDetails = new LoginUserVO(

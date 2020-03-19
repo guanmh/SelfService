@@ -1,21 +1,19 @@
 package com.gmh.config;
 
-import com.gmh.impl.JwtUserDetailsService;
+import com.gmh.impl.LoginServiceImpl;
 import com.gmh.utils.ApplicationParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @project: self
@@ -32,13 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   ApplicationParams params;
 
   @Autowired
-  private JwtUserDetailsService jwtUserDetailsService;
-
-  @Autowired
-  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-  @Autowired
-  JwtAuthenticationFilter jwtAuthenticationFilter;
+  private LoginServiceImpl jwtUserDetailsService;
 
   /**
    * 不需要登录就能访问的URL
@@ -56,47 +48,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return SelfPasswordEncoder.create(userSuperPassword);
   }
 
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-//    http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//        .and()
-//        .authorizeRequests()
-//        .antMatchers("/*")
-//        .permitAll()
-//        .anyRequest()
-//        .authenticated()
-//        .and()
-//        .formLogin()
-//        .loginPage("/loginMsg")
-//        .loginProcessingUrl("/login")
-//        .failureForwardUrl("/loginError")
-//        .defaultSuccessUrl("/loginSuccess", true)
-//        .permitAll()
-//        .and()
-//        .sessionManagement()
-//        .invalidSessionUrl("/timeout")
-//        .and()
-//        .rememberMe()
-//        .tokenValiditySeconds(1209600)
-//        .and()
-//        .logout()
-//        .logoutSuccessUrl("/logoutSuccess")
-//        .and()
-//        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//        .csrf().disable()// 禁用 Spring Security 自带的跨域处理
-//        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);// 定制我们自己的session策略:调整为让SpringSecurity不创建和使用 session
-    http
-            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+    http.headers()
             .and()
             .authorizeRequests()
-            .antMatchers("/login").permitAll()
-            .antMatchers(HttpMethod.OPTIONS, "/**").anonymous()
-            .anyRequest().authenticated()   // 剩下所有的验证都需要验证
+            .antMatchers("/*")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
             .and()
-            .csrf().disable()                      // 禁用 Spring Security 自带的跨域处理
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    // 定制我们自己的 session 策略：调整为让 Spring Security 不创建和使用 session、
-      http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .formLogin()
+            .loginPage("/loginMsg")
+            .loginProcessingUrl("/login")
+            .failureForwardUrl("/loginError")
+            .defaultSuccessUrl("/loginSuccess", true)
+            .permitAll()
+            .and()
+            .sessionManagement()
+            .invalidSessionUrl("/timeout")
+            .and()
+            .rememberMe()
+            .tokenValiditySeconds(1209600)
+            .and()
+            .logout()
+            .logoutSuccessUrl("/logoutSuccess")
+            .and()
+            .csrf();
   }
 
   @Override
