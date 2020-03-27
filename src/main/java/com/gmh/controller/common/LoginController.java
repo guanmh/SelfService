@@ -1,18 +1,25 @@
 package com.gmh.controller.common;
 
+import com.gmh.config.aop.HasPermissions;
+import com.gmh.entity.common.User;
 import com.gmh.enums.CacheEnum;
 import com.gmh.enums.ReturnCodeEnum;
 import com.gmh.enums.SystemStringEnum;
+import com.gmh.service.common.IUserService;
 import com.gmh.utils.CacheUtils;
 import com.gmh.utils.ReturnUtil;
 import com.gmh.utils.WebUtils;
 import com.gmh.vo.LoginUserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Role;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +38,8 @@ public class LoginController {
   private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
   @Value("${server.port}")
   private String servicePort;
+
+  @Autowired private IUserService userService;
 
   @GetMapping("getCsrf")
   @Cacheable(
@@ -59,9 +68,31 @@ public class LoginController {
   public String loginMsg() {
     return ReturnUtil.error(ReturnCodeEnum.LOGIN_ERROR);
   }
+
   @GetMapping("loginSuccess")
   public String loginSuccess() {
     LOG.info("登录服务器,端口号：" + servicePort);
     return ReturnUtil.success(ReturnCodeEnum.LOGIN_SUCCESS);
+  }
+
+  /**
+   * 添加用户
+   * @param user
+   * @return
+   */
+  @PostMapping("addUser")
+  public String addUser(User user){
+    userService.addUser(user);
+    return ReturnUtil.success();
+  }
+
+  /**
+   * 获取用户信息
+   * @return
+   */
+  @HasPermissions(permissions = "SYS_f1")
+  @GetMapping("getUser")
+  public String getUser(){
+    return ReturnUtil.success(WebUtils.loginUser());
   }
 }

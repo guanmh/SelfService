@@ -11,7 +11,6 @@
         <result column="login_password" jdbcType="VARCHAR" property="loginPassword"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
-        <result column="user_type" jdbcType="INTEGER" property="userType"/>
         <collection column="roleId" property="roles"
                     ofType="com.gmh.entity.common.Role">
             <id column="roleId" property="id"/>
@@ -22,25 +21,23 @@
 
     <select id="loginUser" parameterType="string" resultMap="BaseResultMap">
        SELECT
-        c_user.id,
-        c_user.is_cancel,
-        c_user.create_time,
-        c_user.login_name,
-        c_user.login_password,
-        c_user.`name`,
-        c_user.phone,
-        c_user.email,
-        c_user.user_type,
-        c_user.company_id,
-        c_role.id AS roleId,
-        c_role.`name` AS roleName,
-        c_role.power AS rolePower
+        sys_user.id,
+        sys_user.is_cancel,
+        sys_user.create_time,
+        sys_user.login_name,
+        sys_user.login_password,
+        sys_user.`name`,
+        sys_user.phone,
+        sys_user.email,
+        sys_role.id AS roleId,
+        sys_role.`name` AS roleName,
+        sys_role.power AS rolePower
         FROM
-        c_user
-        LEFT JOIN c_user_role ON c_user_role.user_id = c_user.id
-        LEFT JOIN c_role ON c_user_role.role_id = c_role.id AND c_role.is_cancel = 0
+        sys_user
+        LEFT JOIN sys_user_role ON sys_user_role.user_id = sys_user.id
+        LEFT JOIN sys_role ON sys_user_role.role_id = sys_role.id AND sys_role.is_cancel = 0
         WHERE
-        c_user.is_cancel = 0 AND c_user.login_name=#{name}
+        sys_user.is_cancel = 0 AND sys_user.login_name=#{name}
     </select>
     <select id="pageUser" resultType="java.util.Map">
         SELECT
@@ -116,14 +113,12 @@
     </select>
 
     <insert id="insert" parameterType="com.gmh.entity.common.User">
-        insert into c_user (
+        insert into sys_user (
           email, login_name, login_password,
-          name, phone, user_type,
-          company_id)
+          name, phone)
         values (
           #{email,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, #{loginPassword,jdbcType=VARCHAR},
-          #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
-          #{company.id,jdbcType=BIGINT})
+          #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR})
       </insert>
     <update id="updateByPrimaryKey" parameterType="com.gmh.entity.common.User">
         update c_user

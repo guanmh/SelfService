@@ -45,7 +45,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
    */
   @Override
   public List<Menu> getAllNoCancel() {
-    return menuMapper.getMenus();
+    return menuMapper.getMenus(null);
   }
 
   @Override
@@ -101,7 +101,12 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
     return root;
   }
 
-  @Override
+    @Override
+    public List<Menu> queryByUserId(Long id) {
+        return menuMapper.getMenus(id);
+    }
+
+    @Override
   protected BaseMapper getMapper() {
     return menuMapper;
   }

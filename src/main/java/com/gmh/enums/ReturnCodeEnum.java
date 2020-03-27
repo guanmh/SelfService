@@ -16,7 +16,8 @@ public enum ReturnCodeEnum {
     ERROR(-1,"系统错误"),
     LOGIN_ERROR(100,"用户名或秘密错误"),
     REPEATED_SUBMIT(101,"请勿重复提交"),
-    DATA_ERROR(102,"数据异常");
+    DATA_ERROR(102,"数据异常"),
+    NO_PERMISSION(103,"没有权限");
 
     private int code;
     private String msg;

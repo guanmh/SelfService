@@ -70,24 +70,41 @@ public class LoginServiceImpl implements UserDetailsService {
                       functionService.getAllNoCancel(),
                       menuService.getAllNoCancel(),
                       SystemStringEnum.RolePowerEnum.ADMIN.getCode());
-      List<GrantedAuthority> authorityList = new ArrayList<>();
-      authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
       UserDetails userDetails = new LoginUserVO(
               adminId,
               adminName,
               adminAccountName,
               passwordEncoder.encode(adminPassword),
               true,
-              authorityList);
+              authorities);
       return userDetails;
     } else {
       User user = userMapper.loginUser(loginName);
       if (Objects.isNull(user)) {
         throw new UsernameNotFoundException("用户名或密码错误！");
       }
-//      return getUserDetails(user);
-      return null;
+      return getUserDetails(user);
     }
+  }
+  /**
+   * 将用户表转为安全框架用户表
+   *
+   * @return
+   */
+  private UserDetails getUserDetails(User user) {
+    /** 权限相关 */
+    List<SimpleGrantedAuthority> authorities =
+            getSimpleGrantedAuthorities(
+                    user.getRoles(),
+                    functionService.queryBuUserId(user.getId()),
+                    menuService.queryByUserId(user.getId()));
+    return new LoginUserVO(
+            user.getId(),
+            user.getName(),
+            user.getLoginName(),
+            user.getLoginPassword(),
+            false,
+            authorities);
   }
   private List<SimpleGrantedAuthority> getSimpleGrantedAuthorities(
           List<Role> roles, List<Function> functions, List<Menu> menus, String... codes) {

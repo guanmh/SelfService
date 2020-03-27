@@ -12,4 +12,6 @@ import java.util.List;
  */
 public interface IFunctionService extends IBaseService<Function> {
 
+    List<Function> queryBuUserId(Long id);
+
 }

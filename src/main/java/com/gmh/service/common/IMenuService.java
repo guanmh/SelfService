@@ -21,4 +21,6 @@ public interface IMenuService extends IBaseService<Menu> {
      */
     List<TreeVO> getTree();
 
+    List<Menu> queryByUserId(Long id);
+
 }

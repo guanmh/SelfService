@@ -25,6 +25,9 @@
         LEFT JOIN sys_role_menu ON sys_role_menu.menu_id = m.id
         LEFT JOIN sys_user_role ON sys_role_menu.role_id = sys_user_role.role_id
         WHERE m.is_cancel = 0
+        <if test="userId != null">
+            AND sys_user_role.user_id =#{userId}
+        </if>
         ORDER BY m.order_asc ASC
     </select>
 </mapper>

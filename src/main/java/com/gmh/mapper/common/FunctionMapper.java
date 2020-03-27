@@ -3,6 +3,7 @@ package com.gmh.mapper.common;
 import com.gmh.entity.common.Function;
 import com.gmh.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -33,5 +34,5 @@ public interface FunctionMapper extends BaseMapper<Function> {
      *
      * @return
      */
-    List<Function> queryList();
+    List<Function> queryList(@Param("userId") Long userId);
 }

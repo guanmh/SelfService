@@ -30,12 +30,17 @@ public class FunctionServiceImpl extends BaseServiceImpl<Function> implements IF
    */
   @Override
   public List<Function> getAllNoCancel() {
-    return functionMapper.queryList();
+    return functionMapper.queryList(null);
   }
 
   @Override
   public List pageMapper(Map<String, Object> params) {
     return super.pageMapper(params);
+  }
+
+  @Override
+  public List<Function> queryBuUserId(Long id) {
+    return functionMapper.queryList(id);
   }
 
   @Override

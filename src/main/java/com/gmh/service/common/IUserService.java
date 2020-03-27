@@ -21,4 +21,9 @@ public interface IUserService extends IBaseService<User> {
    * @return
    */
   List<User> queryByAccountName(List<String> accountNames);
+
+  /**
+   * 添加用户
+   */
+  void addUser(User user);
 }

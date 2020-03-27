@@ -69,5 +69,5 @@ public interface MenuMapper extends BaseMapper<Menu> {
    *
    * @return
    */
-  List<Menu> getMenus();
+  List<Menu> getMenus(@Param("userId") Long userId);
 }

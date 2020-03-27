@@ -29,6 +29,8 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
   @Autowired
   private UserMapper userMapper;
 
+
+
   /**
    * 根据账号查询
    *
@@ -38,6 +40,13 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
   @Override
   public List<User> queryByAccountName(List<String> accountNames) {
     return userMapper.queryByAccountName(accountNames);
+  }
+
+  @Override
+  public void addUser(User user) {
+    //加密密码
+    user.setLoginPassword(passwordEncoder.encode(user.getLoginPassword()));
+    userMapper.insert(user);
   }
 
   @Override

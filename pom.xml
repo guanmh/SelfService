@@ -285,6 +285,11 @@
             <artifactId>amqp-client</artifactId>
             <version>3.4.1</version>
         </dependency>
+        <!--aop-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>self-project</finalName> <!-- 指定package生成的文件名为my-spring-boot.jar -->
