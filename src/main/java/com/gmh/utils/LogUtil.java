@@ -19,7 +19,7 @@ public class LogUtil {
     log.setIp(WebUtils.getIpAddr(request));
     log.setUserId(WebUtils.loginUser().getId());
     log.setBusiness(logName);
-    log.setType(logType.ordinal());
+    log.setType(logType.name());
     return log;
   }
 }

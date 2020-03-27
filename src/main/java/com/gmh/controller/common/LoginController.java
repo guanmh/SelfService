@@ -1,8 +1,10 @@
 package com.gmh.controller.common;
 
 import com.gmh.config.aop.HasPermissions;
+import com.gmh.config.aop.LogDetail;
 import com.gmh.entity.common.User;
 import com.gmh.enums.CacheEnum;
+import com.gmh.enums.LogTypeEnum;
 import com.gmh.enums.ReturnCodeEnum;
 import com.gmh.enums.SystemStringEnum;
 import com.gmh.service.common.IUserService;
@@ -15,8 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Role;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,6 +90,7 @@ public class LoginController {
    * 获取用户信息
    * @return
    */
+  @LogDetail(business = "aop测试",logType = LogTypeEnum.INSERT,content = "0328")
   @HasPermissions(permissions = "SYS_f1")
   @GetMapping("getUser")
   public String getUser(){

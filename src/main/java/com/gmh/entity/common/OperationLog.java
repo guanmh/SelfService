@@ -25,7 +25,7 @@ public class OperationLog extends BaseEntity {
     private String ip;
 
     @ApiModelProperty(value = "操作类型")
-    private Integer type;
+    private String type;
 
     @ApiModelProperty(value = "操作人ID")
     private Long userId;
