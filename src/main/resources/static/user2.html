@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>皮皮</title>
+</head>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script type="text/javascript" src="websocket.js"></script>
+<script>
+    function openSocket() {
+        if(typeof(WebSocket) == "undefined") {
+            console.log("你不配");
+        }else{
+            $("#online").hide();
+            $("#noline").show();
+            console.log("支持WebSocket");
+            var socketUrl="ws://localhost:80/self/websocket/2";
+            console.log(socketUrl);
+            if(socket!=null){
+                socket.close();
+                socket=null;
+            }
+            socket = new WebSocket(socketUrl);
+            //打开事件
+            socket.onopen = function() {
+                console.log("websocket已打开");
+                //socket.send("这是来自客户端的消息" + location.href + new Date());
+            };
+            //获得消息事件
+            socket.onmessage = function(data) {
+                var d = JSON.parse(data.data);
+                //追加span
+                $("#showMsg").append("<span style='display:inline-block;text-align: left;width: 100%'>"+d.msg+"</span>")
+                //发现消息进入开始处理前端触发逻辑
+            };
+            socket.onclose = function() {
+                $("#online").show();
+                $("#noline").hide();
+                console.log("websocket已关闭");
+            };
+            //发生了错误事件
+            socket.onerror = function() {
+                console.log("websocket发生了错误");
+            }
+        }
+    }
+</script>
+<body style="margin-top: 3%;background-color: bisque">
+    <div style="float: left;width: 20%;margin-left: 3%">
+        <button id="online" onclick="openSocket()">上线</button>
+        <button id="noline" style="margin-left: 20px;" onclick="closeSocket()">下线</button>
+        <h2>联系人</h2>
+        <span title="双击发送消息" ondblclick="toUserInfo(this)" id="1" style="color: coral">憨憨</span>
+    </div>
+    <div style="border: 3px solid sienna;margin-right: 40%;width: 30%;float: right">
+        <div id="toUser" style="font-size: 20px;width: 100%;height: 25px;text-align: center">请选择联系人...</div>
+        <input style="display: none" id="toUserId"/>
+        <div id="showMsg" style="width: 100%;height: 300px;position:relative; overflow: auto;overflow-y:auto">
+
+        </div>
+        <textarea id="contentText" placeholder="请输入想说的话" style="width: 99%;height: 150px;resize:none;background-color: burlywood"></textarea>
+        <button style="position: fixed;width: 50px;height: 20px;background-color: beige;margin-left: 26.5%" onclick="sendMessage()">发送</button>
+    </div>
+</form>
+</body>
+</html>

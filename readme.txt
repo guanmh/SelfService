@@ -8,8 +8,9 @@
 2.rabbitmq插件(完成)
 4.redis
 5.spring security + jwt(完成)
-6.spring aop日志管理
-7.docker
-8.spring cloud
-9.kafka
-10.数据库读写分离
+6.spring aop日志管理(完成)
+7.websocket
+8.docker
+9.spring cloud
+10.kafka
+11.数据库读写分离
