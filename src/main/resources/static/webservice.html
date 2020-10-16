@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>publish</title>
+</head>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<body>
+    <button id="test" onclick="testService()">发布测试服务</button>
+</body>
+<script type="application/javascript">
+    function testService() {
+        //发布测试服务
+        $.ajax({
+            type: "get",
+            url : "/self/publish/publishServiceTest",
+            success : function(data) {
+                alert("Publish Success")
+            }
+        });
+    }
+</script>
+</html>

@@ -20,3 +20,5 @@ self-params:
   - /any/**
   - /js/**
   - /websocket/**
+  - /webservice/**
+  - /services/webservice/**

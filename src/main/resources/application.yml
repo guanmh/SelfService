@@ -11,7 +11,7 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
         generate_statistics: false
 server:
-  port: 80
+  port: 8080
   servlet:
     context-path: /self
 jwt:
